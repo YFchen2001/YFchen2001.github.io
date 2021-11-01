@@ -237,7 +237,7 @@
 
           </div>
           
-    <div class="comments" id="valine-comments"></div>
+    <div class="comments" id="gitalk-container"></div>
 
 <script>
   window.addEventListener('tabs:register', () => {
@@ -535,32 +535,23 @@
 
   
 
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
 
 <script>
-NexT.utils.loadComments(document.querySelector('#valine-comments'), () => {
-  NexT.utils.getScript('//unpkg.com/valine/dist/Valine.min.js', () => {
-    var GUEST = ['nick', 'mail', 'link'];
-    var guest = 'nick,mail,link';
-    guest = guest.split(',').filter(item => {
-      return GUEST.includes(item);
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f1dc440bb3d1c2b1cc7d',
+      clientSecret: 'd80698d047034133996b5a3963489cdfac6c049b hex',
+      repo        : 'YFchen2001.github.io',
+      owner       : 'YFchen2001# GitHub repo owner',
+      admin       : ['YFchen'],
+      id          : 'a676607444a8bc8b150c9a3aff884e61',
+        language: '',
+      distractionFreeMode: true
     });
-    new Valine({
-      el         : '#valine-comments',
-      verify     : false,
-      notify     : false,
-      appId      : 'jyeyFCBfgkvSiXbuefRa0BoX-MdYXbMMI',
-      appKey     : 'atiJ6ekDbTbysVJ8SDTMOTSP# Your leancloud application appkey',
-      placeholder: "填上你的邮箱就可以收到我的回复哦！",
-      avatar     : 'https://i.loli.net/2021/10/31/cdX8rDpBSHNbEhY.jpg',
-      meta       : guest,
-      pageSize   : '10' || 10,
-      visitor    : false,
-      lang       : 'zh-Hans' || 'zh-cn',
-      path       : location.pathname,
-      recordIP   : false,
-      serverURLs : ''
-    });
-  }, window.Valine);
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
 });
 </script>
 
