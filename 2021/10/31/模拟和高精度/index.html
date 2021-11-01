@@ -1,0 +1,769 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yfchen2001.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+  <meta name="description" content="我是摘要，测试中,hello world~">
+<meta property="og:type" content="article">
+<meta property="og:title" content="模拟和高精度">
+<meta property="og:url" content="https://yfchen2001.github.io/2021/10/31/%E6%A8%A1%E6%8B%9F%E5%92%8C%E9%AB%98%E7%B2%BE%E5%BA%A6/index.html">
+<meta property="og:site_name" content="抑~风">
+<meta property="og:description" content="我是摘要，测试中,hello world~">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/10/31/2ybDkfv9NjiSdBC.png">
+<meta property="og:image" content="https://i.loli.net/2021/10/31/7zoFLPSXRhjrixN.png">
+<meta property="og:image" content="https://i.loli.net/2021/10/31/1qRgzVIGWm7TtbC.png">
+<meta property="og:image" content="https://i.loli.net/2021/10/31/1FL3Q9WZwHkvqKR.png">
+<meta property="og:image" content="https://i.loli.net/2021/10/31/bKmGTDzZvaCle1u.png">
+<meta property="article:published_time" content="2021-10-31T14:01:52.000Z">
+<meta property="article:modified_time" content="2021-11-01T13:44:03.197Z">
+<meta property="article:author" content="YFchen">
+<meta property="article:tag" content="模拟">
+<meta property="article:tag" content="高精度">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/10/31/2ybDkfv9NjiSdBC.png">
+
+<link rel="canonical" href="https://yfchen2001.github.io/2021/10/31/%E6%A8%A1%E6%8B%9F%E5%92%8C%E9%AB%98%E7%B2%BE%E5%BA%A6/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title>模拟和高精度 | 抑~风</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">抑~风</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一路向北，不问东西</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+        <li class="menu-item menu-item-schedule">
+
+    <a href="/schedule/" rel="section"><i class="fa fa-calendar fa-fw"></i>日程表</a>
+
+  </li>
+        <li class="menu-item menu-item-sitemap">
+
+    <a href="/sitemap.xml" rel="section"><i class="fa fa-sitemap fa-fw"></i>站点地图</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfchen2001.github.io/2021/10/31/%E6%A8%A1%E6%8B%9F%E5%92%8C%E9%AB%98%E7%B2%BE%E5%BA%A6/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2021/10/31/cdX8rDpBSHNbEhY.jpg">
+      <meta itemprop="name" content="YFchen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="抑~风">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          模拟和高精度
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+
+              <time title="创建时间：2021-10-31 22:01:52" itemprop="dateCreated datePublished" datetime="2021-10-31T22:01:52+08:00">2021-10-31</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">更新于</span>
+                <time title="修改时间：2021-11-01 21:44:03" itemprop="dateModified" datetime="2021-11-01T21:44:03+08:00">2021-11-01</time>
+              </span>
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-folder"></i>
+              </span>
+              <span class="post-meta-item-text">分类于</span>
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/luogu%EF%BC%8C%E6%99%AE%E5%8F%8A%E7%BB%84/" itemprop="url" rel="index"><span itemprop="name">luogu，普及组</span></a>
+                </span>
+            </span>
+
+          
+            <span id="/2021/10/31/%E6%A8%A1%E6%8B%9F%E5%92%8C%E9%AB%98%E7%B2%BE%E5%BA%A6/" class="post-meta-item leancloud_visitors" data-flag-title="模拟和高精度" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+            <div class="post-description">我是摘要，测试中,hello world~</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>模拟：即用代码去模拟题目所描述的运行模式</p>
+<p>高精度：即可以计算无限大的数，用数组模拟平常的数值运算</p>
+<span id="more"></span>
+<h2 id="p1045-noip2003-普及组-麦森数">P1045 [NOIP2003 普及组] 麦森数</h2>
+<p>题目</p>
+<p><img src="https://i.loli.net/2021/10/31/2ybDkfv9NjiSdBC.png" alt="image-20211027151639305" /><img src="https://i.loli.net/2021/10/31/7zoFLPSXRhjrixN.png" alt="image-20211027151654094" /></p>
+<p>思路分析：</p>
+<p>对应这道题，我们有两个任务：</p>
+<ul>
+<li>求<span class="math inline">\(2^p-1\)</span>结果的位数</li>
+<li>输出后500位的数字；</li>
+</ul>
+<p>而对于数据量位<span class="math inline">\(1000&lt;p&lt;3100000\)</span>的计算而言，很明显原始的暴力方法会失去作用，且我们的结果需要高精度保存和计算；所以为了加快结果的计算可以利用<code>快速幂</code>技巧（快速幂技巧暂时不会讲解，需要时可自行查阅相关数据）；</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"><span class="comment">//原地高精度乘法算法：即其乘积的结果顺便会存储在第一个传入的操作数中</span></span><br><span class="line"><span class="comment">//但是要注意的是：对应高精度*高精度的乘法而言，都需要一个辅助数组存储临时结果，所以原不原地性能无法得到改变</span></span><br><span class="line"><span class="comment">//但是如果可以保证两个操作数一定来自不同的内存块，即两个都是不同内存的引用（一个改变不会影响另一个），</span></span><br><span class="line"><span class="comment">//那么就可以减去辅助数组；但因为我们需要求平方，所以下面的b为值传递，不是引用传递</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mul</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp;a, vector&lt;<span class="keyword">int</span>&gt;b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> alen = a.<span class="built_in">size</span>(), blen = b.<span class="built_in">size</span>();</span><br><span class="line">	<span class="keyword">int</span> aiVal = <span class="number">0</span>;</span><br><span class="line">	<span class="comment">//为了可以原地改变数组，那么就需要改变后的位置不能影响后面的计算；所以我们就需要有高位开始计算；</span></span><br><span class="line">	<span class="comment">//因为高位不会影响低位，而低位会影响高位：(嵌套循环的竖式乘法)；</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = alen<span class="number">-1</span>;i &gt;=<span class="number">0</span>;i -= <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="comment">//因为是用a[i]去乘以b;然后加到前面已经计算的结果中；且我们当前的a[i]在乘的时候，需要将结果存到a[i]中，</span></span><br><span class="line">		<span class="comment">//所以就需要清空a[i]，不让原本的原始对其产生影响</span></span><br><span class="line">		aiVal = a[i];</span><br><span class="line">		a[i] = <span class="number">0</span>;</span><br><span class="line">		<span class="comment">//高精*低精</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = blen<span class="number">-1</span>;j &gt;=<span class="number">0</span>;j-= <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="keyword">while</span> (i + j &gt;= a.<span class="built_in">size</span>()) &#123;</span><br><span class="line">				a.<span class="built_in">push_back</span>(<span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			a[i + j] += aiVal* b[j];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//进位</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; a.<span class="built_in">size</span>()<span class="number">-1</span>;i += <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (a[i] &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">			a[i + <span class="number">1</span>] += a[i] / <span class="number">10</span>;</span><br><span class="line">			a[i] %= <span class="number">10</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//最后一个位的特殊处理</span></span><br><span class="line">	<span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (a.<span class="built_in">back</span>() &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">		temp = a.<span class="built_in">back</span>() / <span class="number">10</span>;</span><br><span class="line">		a.<span class="built_in">back</span>() %= <span class="number">10</span>;</span><br><span class="line">		a.<span class="built_in">push_back</span>(temp);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">	cin &gt;&gt; p;</span><br><span class="line">	<span class="comment">//res为结果；mulNum为2的幂</span></span><br><span class="line">	vector&lt;<span class="keyword">int</span>&gt;res;</span><br><span class="line">	vector&lt;<span class="keyword">int</span>&gt;mulNum;</span><br><span class="line">	mulNum.<span class="built_in">push_back</span>(<span class="number">2</span>);</span><br><span class="line">	res.<span class="built_in">push_back</span>(<span class="number">1</span>);</span><br><span class="line">	<span class="comment">//快速幂模板</span></span><br><span class="line">	<span class="keyword">while</span> (p != <span class="number">0</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (p &amp; <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="built_in">mul</span>(res, mulNum);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">mul</span>(mulNum, mulNum);</span><br><span class="line">		p &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//输出</span></span><br><span class="line">	res[<span class="number">0</span>] -= <span class="number">1</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; res.<span class="built_in">size</span>()<span class="number">-1</span>;i+=<span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (res[i] &gt; <span class="number">0</span>) &#123;</span><br><span class="line">			<span class="keyword">break</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		res[i] += <span class="number">10</span>;</span><br><span class="line">		res[i - <span class="number">1</span>] -= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	cout &lt;&lt; res.<span class="built_in">size</span>() &lt;&lt; endl;</span><br><span class="line">	<span class="keyword">int</span> count = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">500</span><span class="number">-1</span>;i&gt;=<span class="number">0</span>;i -= <span class="number">1</span>) &#123;</span><br><span class="line">		count += <span class="number">1</span>;</span><br><span class="line">		<span class="keyword">if</span> (i &gt;= res.<span class="built_in">size</span>()) &#123;</span><br><span class="line">			cout &lt;&lt; <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">else</span> &#123;</span><br><span class="line">			cout&lt;&lt;res[i];</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="keyword">if</span> (count == <span class="number">50</span>) &#123;</span><br><span class="line">			cout &lt;&lt; endl;</span><br><span class="line">			count = <span class="number">0</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="https://i.loli.net/2021/10/31/1qRgzVIGWm7TtbC.png" alt="image-20211027153353214" /><figcaption aria-hidden="true">image-20211027153353214</figcaption>
+</figure>
+<p>很明显，我们无法效率过低了，但是对于幂的求解，快速幂的性能已经很好了，主要的开销应该是在高精度乘法中，而高精度的乘法效率的提高就不得不提到<code>压位</code>技巧了==（压位技巧见下方知识拓展）==，对于压位，即一次性处理多位（推荐为10的幂，且因为int的数据量大小问题，所以压位要小心，且对于int压4位，long long 压8位）</p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//	压4位</span></span><br><span class="line"><span class="comment">//整体代码基本都一样，就进位处理的时候有些特别</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">quickMul</span><span class="params">(vector&lt;<span class="keyword">int</span>&gt;&amp; a, vector&lt;<span class="keyword">int</span>&gt;b)</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> alen = a.<span class="built_in">size</span>(), blen = b.<span class="built_in">size</span>();</span><br><span class="line">	<span class="keyword">int</span> aiVal = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = alen - <span class="number">1</span>;i &gt;= <span class="number">0</span>;i -= <span class="number">1</span>) &#123;</span><br><span class="line">		aiVal = a[i];</span><br><span class="line">		a[i] = <span class="number">0</span>;</span><br><span class="line">		<span class="comment">//高精*低精</span></span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = blen - <span class="number">1</span>;j &gt;= <span class="number">0</span>;j -= <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="keyword">while</span> (i + j &gt;= a.<span class="built_in">size</span>()) &#123;</span><br><span class="line">				a.<span class="built_in">push_back</span>(<span class="number">0</span>);</span><br><span class="line">			&#125;</span><br><span class="line">			a[i + j] += aiVal * b[j];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//进位（压位和普通的高精乘法就体现在进位以及到时的显示）</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; a.<span class="built_in">size</span>() - <span class="number">1</span>;i += <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (a[i] &gt;= <span class="number">10000</span>) &#123;</span><br><span class="line">			a[i + <span class="number">1</span>] += a[i] / <span class="number">10000</span>;</span><br><span class="line">			a[i] %= <span class="number">10000</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="comment">//最后一个位的特殊处理</span></span><br><span class="line">	<span class="keyword">int</span> temp = <span class="number">0</span>;</span><br><span class="line">	<span class="keyword">while</span> (a.<span class="built_in">back</span>() &gt;= <span class="number">10000</span>) &#123;</span><br><span class="line">		temp = a.<span class="built_in">back</span>() / <span class="number">10000</span>;</span><br><span class="line">		a.<span class="built_in">back</span>() %= <span class="number">10000</span>;</span><br><span class="line">		a.<span class="built_in">push_back</span>(temp);</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">//注意：在显示操作中，如果是压位计算的，那么其要注意处理最高位位，其他位的前置零不能忽略，即如果位32，且压4位，那么显示是就需要显示0032；</span></span><br><span class="line">cout &lt;&lt; <span class="built_in">setw</span>(<span class="number">4</span>) &lt;&lt; <span class="built_in">setfill</span>(<span class="string">&#x27;0&#x27;</span>) &lt;&lt; res[i];</span><br></pre></td></tr></table></figure>
+<p>但是这道题其实基本不能用，因为其在显示时的要求太多，压位后要控制这些东西比较困难</p>
+<p>这里推荐纯压位解法：https://www.luogu.com.cn/blog/812-xiao-wen/solution-p1045；</p>
+<h4 id="那么我们还能怎么加速呢">那么我们还能怎么加速呢？</h4>
+<p>首先我们需要很清楚的自动对于一般的计算幂以及高精乘法的优化已经有了，或是无法实现，但这道题还没解出，那么就证明其这道题还有一些别的特殊点，我们回头再看一下题目，发现对于这道题，我们就仅仅需要后500位的结果即可，且我们要注意一个点：乘法的低位会影响高位，但高位不会影响低位，所以我们在计算时，就计算到500位即可，后面的就不用在遍历下去；</p>
+<p>我们看一下其中一个超时测试案例:in--&gt;756839;</p>
+<p>我们可以发现如果就计算到后500位，那么计算量是减少很多的，但是又出现一个问题，就是有没有结果位数无法求出？</p>
+<p>那我们就从这道题的特殊性出发即<code>2^p-1</code>;对于这个数其实我们知道它二进制有多少位，因为其表示形式位<span class="math inline">\(2^p\)</span>;所以我们是否可以将其转化位<span class="math inline">\(10^k\)</span>呢？ <span class="math display">\[
+推算
+令k为所需要求的位数；由题意得：\\
+10^k&gt;2^p&gt;10^{k-1}\\
+k&gt;{log_{10}2^p}=P*log_{10}2&gt;k+1;\\
+由于k取最接近得正整数:k=\lfloor P*log_{10}2\rfloor+
+\]</span></p>
+<figure class="highlight c++"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;vector&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;climits&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cmath&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;stack&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;queue&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;string&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;algorithm&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;cstring&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;iomanip&gt;</span></span></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="keyword">const</span> <span class="keyword">int</span> SIZE = <span class="number">501</span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//高精度乘法，有辅助数组，乘法的副作用作用域第一个参数</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">mul2</span><span class="params">(<span class="keyword">int</span>*res,<span class="keyword">int</span>*a,<span class="keyword">int</span>*sav)</span> </span>&#123;</span><br><span class="line">	<span class="comment">//cout &lt;&lt; sizeof(sav) &lt;&lt; endl;</span></span><br><span class="line">	<span class="comment">//注意：memset,mencpy等函数的第三个size量为字节长度，即int为4字节最好就size*sizeof(type);</span></span><br><span class="line">	<span class="built_in">memset</span>(sav, <span class="number">0</span>, SIZE*<span class="number">4</span>);</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; SIZE;i += <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">for</span> (<span class="keyword">int</span> j = <span class="number">0</span>;j &lt; SIZE&amp;&amp;i-j&gt;=<span class="number">0</span>&amp;&amp;i-j&lt;SIZE;j += <span class="number">1</span>) &#123;</span><br><span class="line">			sav[i] += a[j] * res[i - j];</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>;i &lt; SIZE - <span class="number">1</span>;i += <span class="number">1</span>) &#123;</span><br><span class="line">		<span class="keyword">if</span> (sav[i] &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">			sav[i + <span class="number">1</span>] += sav[i] / <span class="number">10</span>;</span><br><span class="line">			sav[i] %= <span class="number">10</span>;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">	<span class="built_in">memcpy</span>(res, sav, SIZE*<span class="number">4</span>);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">main</span><span class="params">()</span> </span>&#123;</span><br><span class="line">	<span class="keyword">int</span> p = <span class="number">0</span>;</span><br><span class="line">	cin &gt;&gt; p;</span><br><span class="line">	<span class="comment">//预先计算总次数</span></span><br><span class="line">	cout &lt;&lt; (<span class="keyword">int</span>)(p * <span class="built_in">log10</span>(<span class="number">2</span>))+<span class="number">1</span> &lt;&lt; endl;</span><br><span class="line">	<span class="comment">//后面如果为了方便调试可以尽量用STL的容器</span></span><br><span class="line">	<span class="keyword">int</span> res[<span class="number">501</span>] = &#123; <span class="number">0</span> &#125;;<span class="comment">//结果高精度数组</span></span><br><span class="line">	<span class="keyword">int</span> sav[<span class="number">501</span>] = &#123; <span class="number">0</span> &#125;;<span class="comment">//辅助数组</span></span><br><span class="line">	<span class="keyword">int</span> a[<span class="number">501</span>] = &#123; <span class="number">0</span> &#125;;<span class="comment">//幂数组</span></span><br><span class="line">	res[<span class="number">0</span>] = <span class="number">1</span>;</span><br><span class="line">	a[<span class="number">0</span>] = <span class="number">2</span>;</span><br><span class="line">	<span class="keyword">while</span> (p) &#123;</span><br><span class="line">		<span class="keyword">if</span> (p &amp; <span class="number">1</span> == <span class="number">1</span>) &#123;</span><br><span class="line">			<span class="built_in">mul2</span>(res, a, sav);</span><br><span class="line">		&#125;</span><br><span class="line">		<span class="built_in">mul2</span>(a,a,sav);</span><br><span class="line">		p &gt;&gt;= <span class="number">1</span>;</span><br><span class="line">	&#125;</span><br><span class="line">	res[<span class="number">0</span>] -= <span class="number">1</span>;</span><br><span class="line">	<span class="comment">/*int top = 0;</span></span><br><span class="line"><span class="comment">	while (res[top] &lt; 0&amp;&amp;top&lt;SIZE) &#123;</span></span><br><span class="line"><span class="comment">		res[top] += 10;</span></span><br><span class="line"><span class="comment">		res[top + 1] -= 1;</span></span><br><span class="line"><span class="comment">	&#125;*/</span></span><br><span class="line">	<span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">500</span> - <span class="number">1</span>,j=<span class="number">1</span>;i &gt;= <span class="number">0</span>;i -= <span class="number">1</span>,j+=<span class="number">1</span>) &#123;</span><br><span class="line">		cout &lt;&lt; res[i];</span><br><span class="line">		<span class="keyword">if</span> (j % <span class="number">50</span>==<span class="number">0</span>) &#123;</span><br><span class="line">			cout &lt;&lt; endl;</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure>
+<img src="https://i.loli.net/2021/10/31/1FL3Q9WZwHkvqKR.png" alt="image-20211027230136710" /><figcaption aria-hidden="true">image-20211027230136710</figcaption>
+</figure>
+<h1 id="p1249-最大乘积">P1249 最大乘积</h1>
+<p>题目</p>
+<figure>
+<img src="https://i.loli.net/2021/10/31/bKmGTDzZvaCle1u.png" alt="image-20211027231214308" /><figcaption aria-hidden="true">image-20211027231214308</figcaption>
+</figure>
+<p>思路分析：</p>
+<p>对于这道题:首先可能意识到的就是动态规划去解（当然这是一个01背包问题），可以通过动态规划去解，当我们首先先来看另外一个思路</p>
+<h3 id="不重复拆分积最大问题">不重复拆分积最大问题</h3>
+<p>因为是要积最大，所以就需要拆出来的因数相距最小,因为<span class="math inline">\(（a-i）*(a+i)=a^2-i^2&lt;a^2\)</span>,所以就需要拆出来的数相距更小，另外因为可以拆分成多个数，那么我们要拆分成多少个数比较好呢？</p>
+<p>对于这个问题，我目前无法给予证明，但就网上资料表明：</p>
+<ul>
+<li>对于一个数而言，如果其拆的数可以重复，那么就尽可能的拆分成3，以及至多一个2</li>
+<li>但如果其拆的数不可重复，那么就可以在保证拆的数相距较小的前提下，尽可能多的拆分出一些数过来；</li>
+</ul>
+<p>对于这道题，就是不可重复的，所以我们要如何寻找满足上面要求的情况呢？</p>
+<p>答案就是：可以由2开始遍历，然后逐渐累计，直到超过n,但是这就又出来了，一个问题，那就是如何</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>YFchen
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://yfchen2001.github.io/2021/10/31/%E6%A8%A1%E6%8B%9F%E5%92%8C%E9%AB%98%E7%B2%BE%E5%BA%A6/" title="模拟和高精度">https://yfchen2001.github.io/2021/10/31/模拟和高精度/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%A8%A1%E6%8B%9F/" rel="tag"># 模拟</a>
+              <a href="/tags/%E9%AB%98%E7%B2%BE%E5%BA%A6/" rel="tag"># 高精度</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/10/31/%E8%B4%AA%E5%BF%83/%E8%B4%AA%E5%BF%83%E4%B8%AD%E7%AD%89%E9%A2%98/" rel="prev" title="贪心专题（二）">
+      <i class="fa fa-chevron-left"></i> 贪心专题（二）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2021/11/01/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%92%8C%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%9F%BA%E7%A1%80/" rel="next" title="线段树专题--基础部分">
+      线段树专题--基础部分 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#p1045-noip2003-%E6%99%AE%E5%8F%8A%E7%BB%84-%E9%BA%A6%E6%A3%AE%E6%95%B0"><span class="nav-number">1.</span> <span class="nav-text">P1045 [NOIP2003 普及组] 麦森数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%82%A3%E4%B9%88%E6%88%91%E4%BB%AC%E8%BF%98%E8%83%BD%E6%80%8E%E4%B9%88%E5%8A%A0%E9%80%9F%E5%91%A2"><span class="nav-number">1.0.1.</span> <span class="nav-text">那么我们还能怎么加速呢？</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#p1249-%E6%9C%80%E5%A4%A7%E4%B9%98%E7%A7%AF"><span class="nav-number"></span> <span class="nav-text">P1249 最大乘积</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E9%87%8D%E5%A4%8D%E6%8B%86%E5%88%86%E7%A7%AF%E6%9C%80%E5%A4%A7%E9%97%AE%E9%A2%98"><span class="nav-number">0.1.</span> <span class="nav-text">不重复拆分积最大问题</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YFchen"
+      src="https://i.loli.net/2021/10/31/cdX8rDpBSHNbEhY.jpg">
+  <p class="site-author-name" itemprop="name">YFchen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">5</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/YFchen2001" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;YFchen2001" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2965241316@qq.com" title="E-Mail → 2965241316@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YFchen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+<div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="true"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"jyeyFCBfgkvSiXbuefRa0BoX-MdYXbMMI","app_key":"atiJ6ekDbTbysVJ8SDTMOTSP","server_url":null,"security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='179,179,179' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+      
+
+<script>
+  if (typeof MathJax === 'undefined') {
+    window.MathJax = {
+      loader: {
+        source: {
+          '[tex]/amsCd': '[tex]/amscd',
+          '[tex]/AMScd': '[tex]/amscd'
+        }
+      },
+      tex: {
+        inlineMath: {'[+]': [['$', '$']]},
+        tags: 'ams'
+      },
+      options: {
+        renderActions: {
+          findScript: [10, doc => {
+            document.querySelectorAll('script[type^="math/tex"]').forEach(node => {
+              const display = !!node.type.match(/; *mode=display/);
+              const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display);
+              const text = document.createTextNode('');
+              node.parentNode.replaceChild(text, node);
+              math.start = {node: text, delim: '', n: 0};
+              math.end = {node: text, delim: '', n: 0};
+              doc.math.push(math);
+            });
+          }, '', false],
+          insertedScript: [200, () => {
+            document.querySelectorAll('mjx-container').forEach(node => {
+              let target = node.parentNode;
+              if (target.nodeName.toLowerCase() === 'li') {
+                target.parentNode.classList.add('has-jax');
+              }
+            });
+          }, '', false]
+        }
+      }
+    };
+    (function () {
+      var script = document.createElement('script');
+      script.src = '//cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js';
+      script.defer = true;
+      document.head.appendChild(script);
+    })();
+  } else {
+    MathJax.startup.document.state(0);
+    MathJax.texReset();
+    MathJax.typeset();
+  }
+</script>
+
+    
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f1dc440bb3d1c2b1cc7d',
+      clientSecret: '4630ddcbc21ae98a24bdffbe19bb8e9291d12ad0',
+      repo        : 'YFchen2001.github.io',
+      owner       : 'YFchen2001',
+      admin       : ['YFchen2001'],
+      id          : 'e72b50cc4d5313cf6a785ba6a8c27508',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
