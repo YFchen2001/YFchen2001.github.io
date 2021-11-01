@@ -81,6 +81,13 @@
   </url>
   
   <url>
+    <loc>https://yfchen2001.github.io/tags/%E8%B4%AA%E5%BF%83/</loc>
+    <lastmod>2021-11-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://yfchen2001.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2021-11-01</lastmod>
     <changefreq>daily</changefreq>
@@ -89,13 +96,6 @@
   
   <url>
     <loc>https://yfchen2001.github.io/tags/%E7%BA%BF%E6%AE%B5%E6%A0%91%EF%BC%8C%E6%B4%9B%E8%B0%B7/</loc>
-    <lastmod>2021-11-01</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://yfchen2001.github.io/tags/%E8%B4%AA%E5%BF%83/</loc>
     <lastmod>2021-11-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -111,13 +111,6 @@
   </url>
   
   <url>
-    <loc>https://yfchen2001.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
-    <lastmod>2021-11-01</lastmod>
-    <changefreq>daily</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
     <loc>https://yfchen2001.github.io/categories/leetcode/</loc>
     <lastmod>2021-11-01</lastmod>
     <changefreq>daily</changefreq>
@@ -125,7 +118,7 @@
   </url>
   
   <url>
-    <loc>https://yfchen2001.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E7%BA%BF%E6%AE%B5%E6%A0%91/</loc>
+    <loc>https://yfchen2001.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/</loc>
     <lastmod>2021-11-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
@@ -133,6 +126,13 @@
   
   <url>
     <loc>https://yfchen2001.github.io/categories/leetcode/%E8%B4%AA%E5%BF%83/</loc>
+    <lastmod>2021-11-01</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://yfchen2001.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/%E7%BA%BF%E6%AE%B5%E6%A0%91/</loc>
     <lastmod>2021-11-01</lastmod>
     <changefreq>daily</changefreq>
     <priority>0.6</priority>
