@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+  <link rel="stylesheet" href="/lib/pace/pace-theme-minimal.min.css">
+  <script src="/lib/pace/pace.min.js"></script>
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"yfchen2001.github.io","root":"/","scheme":"Mist","version":"7.8.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":true,"show_result":true,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":true},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},"path":"search.xml"};
+  </script>
+
+<meta name="google-site-verification" content="WRY6BIFlLhyieW7WFxSUxHCwqVP5gHoRrstl7xoUgBs" />
+  <meta name="description" content="title:Federated Few-Shot Learning with Adversarial Learning通读笔记   date:2021-11-7 18:30:02   tags:[联邦学习，少样本学习]   categories:[论文阅读]   copyright:true    Federated Few-Shot Learning">
+<meta property="og:type" content="article">
+<meta property="og:title" content="抑~风">
+<meta property="og:url" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/index.html">
+<meta property="og:site_name" content="抑~风">
+<meta property="og:description" content="title:Federated Few-Shot Learning with Adversarial Learning通读笔记   date:2021-11-7 18:30:02   tags:[联邦学习，少样本学习]   categories:[论文阅读]   copyright:true    Federated Few-Shot Learning">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107152451843.png">
+<meta property="og:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107152610353.png">
+<meta property="og:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107152650341.png">
+<meta property="og:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107152808652.png">
+<meta property="og:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107153735575.png">
+<meta property="og:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107153752092.png">
+<meta property="article:published_time" content="2021-11-07T10:34:21.318Z">
+<meta property="article:modified_time" content="2021-11-07T10:33:13.067Z">
+<meta property="article:author" content="YFchen">
+<meta property="article:tag" content="算法">
+<meta property="article:tag" content="题解">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/论文.assets/image-20211107152451843.png">
+
+<link rel="canonical" href="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-CN'
+  };
+</script>
+
+  <title> | 抑~风</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+</head>
+
+
+<script type="text/javascript" src="//cdn.bootcss.com/canvas-nest.js/1.0.0/canvas-nest.min.js"></script>
+
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">抑~风</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+      <p class="site-subtitle" itemprop="description">一路向北，不问东西</p>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a>
+
+  </li>
+        <li class="menu-item menu-item-tags">
+
+    <a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>标签</a>
+
+  </li>
+        <li class="menu-item menu-item-categories">
+
+    <a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>分类</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a>
+
+  </li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div id="search-result">
+  <div id="no-result">
+    <i class="fa fa-spinner fa-pulse fa-5x fa-fw"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="https://i.loli.net/2021/10/31/cdX8rDpBSHNbEhY.jpg">
+      <meta itemprop="name" content="YFchen">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="抑~风">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">发表于</span>
+              
+
+              <time title="创建时间：2021-11-07 18:34:21 / 修改时间：18:33:13" itemprop="dateCreated datePublished" datetime="2021-11-07T18:34:21+08:00">2021-11-07</time>
+            </span>
+
+          
+            <span id="/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/" class="post-meta-item leancloud_visitors" data-flag-title="" title="阅读次数">
+              <span class="post-meta-item-icon">
+                <i class="fa fa-eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span class="leancloud-visitors-count"></span>
+            </span>
+            <span class="post-meta-item" title="阅读次数" id="busuanzi_container_page_pv" style="display: none;">
+              <span class="post-meta-item-icon">
+                <i class="eye"></i>
+              </span>
+              <span class="post-meta-item-text">阅读次数：</span>
+              <span id="busuanzi_value_page_pv"></span>
+            </span>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <table>
+<tbody>
+<tr class="odd">
+<td>title:Federated Few-Shot Learning with Adversarial Learning通读笔记</td>
+</tr>
+<tr class="even">
+<td>date:2021-11-7 18:30:02</td>
+</tr>
+<tr class="odd">
+<td>tags:[联邦学习，少样本学习]</td>
+</tr>
+<tr class="even">
+<td>categories:[论文阅读]</td>
+</tr>
+<tr class="odd">
+<td>copyright:true</td>
+</tr>
+</tbody>
+</table>
+<p>Federated Few-Shot Learning with Adversarial Learning通读笔记</p>
+<p>联邦学习下的少样本学习</p>
+<span id="more"></span>
+<h2 id="论文出处及年份论文标题论文作者及工作单位团队">论文出处及年份、论文标题、论文作者及工作单位（团队）</h2>
+<ul>
+<li><p>作者：</p>
+<ul>
+<li><p>Chenyou Fan（邮箱： fanchenyou@cuhk.edu.cn；工作单位： Shenzhen Institute of Artificial Intelligence and Robotics for Society China）</p></li>
+<li><p>Jianwei Huang （邮箱： jianweihuang@cuhk.edu.cn；工作单位： The Chinese University of Hong Kong, Shenzhen China）</p></li>
+</ul></li>
+<li><p>年份：2021</p></li>
+<li><p>出处：arXiv</p></li>
+</ul>
+<h2 id="关键词">关键词</h2>
+<p>少样本学习，联邦学习</p>
+<h2 id="概述">概述</h2>
+<p>提出一种在多方协调学习，不共享私有数据的前提下（联邦学习），采用对抗性学习（即有：分类器和生成器模型）的手法，进行少样本学习的方法</p>
+<h2 id="论文研究的问题及其意义">论文研究的问题及其意义</h2>
+<ul>
+<li><p>问题：<strong>该论文是研究如何在分布式的情况下进行Few-shot Learning以达到较好的表现</strong>；（Few-shot Learning 是 Meta Learning（learning to learn） 在监督学习领域的应用，即在 meta training 阶段将数据集分解为不同的 meta task，去学习类别变化的情况下模型的泛化能力，在 meta testing 阶段，面对全新的类别，不需要变动已有的模型，就可以完成分类；）</p></li>
+<li><p>意义：可以用到手机打字程序的联想功能，让联想功能和你平时的习惯相匹配；可以通过较少的图片数据得到比较好的脸部识别模型</p></li>
+</ul>
+<h2 id="现有方法及其优缺点参考文献">现有方法及其优缺点（参考文献）</h2>
+<ul>
+<li>现有的联邦学习方法都有假设了每一个参加的客户端都有拥有大量有效的训练数据集<a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a><a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a><a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a></li>
+<li>FSL（Few-shot Learning）方法就旨在解决数据稀少的问题，但现有的方法的训练数据大都来自同一个数据源<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a><a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a><a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a></li>
+</ul>
+<h2 id="论文提出的思路和方法及其优缺点">论文提出的思路和方法，及其优缺点</h2>
+<p>FedFSL-MI-Adv 方法思路：</p>
+<ul>
+<li>描述：分俩部分，一部分为客户端的更新，另一部分为客户端数据的汇总以及反馈</li>
+<li>客户端更新：
+<ol type="1">
+<li>对客户端有用的数据集进行多组采样，得到一系列support set和batch set，注意两个数据子集成对出现；或者是通过生成模型生成的数据</li>
+<li>接收当前汇总反馈的模型数据，并作为初始值；再重新初始化一个新的分类模型；（每次跟新都有两分类模型，和一个汇总反馈的样本空间生成模型）</li>
+<li>然后进行常规的对抗训练
+<ul>
+<li>即先固定生成模型，利用随机梯度下降更新两个分类模型</li>
+<li>再固定分类模型，更新生成模型</li>
+</ul></li>
+<li>最后反馈原来接收反馈初始化的那个分类模型和生成模型</li>
+<li>补充：
+<ul>
+<li>下式为更新分类模型的目标函数：</li>
+<li><img src="论文.assets/image-20211107152451843.png" alt="image-20211107152451843" /><img src="论文.assets/image-20211107152610353.png" alt="image-20211107152610353" /></li>
+<li>下式为更新生成模型的目标函数</li>
+<li><img src="论文.assets/image-20211107152650341.png" title="fig:" alt="s" /></li>
+<li>有两个分类模型的意义：在于可以比较好的确定决策边界，以及获得让生成模型可以生成理想特征空间的样本；一般让同类样本相距近，异类样本相距远</li>
+<li><img src="论文.assets/image-20211107152808652.png" title="fig:" alt="image-20211107152808652" /></li>
+</ul></li>
+</ol></li>
+<li>客户端汇总以及反馈
+<ul>
+<li>初始化全局模型参数，或是接收客户端反馈数据进行加权平均（即按每个客户端拥有的数据量来进行加权平均）</li>
+<li>最后得到一个全局模型 参数（有分类和生成两个模型的参数），并反馈给客户端</li>
+</ul></li>
+</ul>
+<p>优点：</p>
+<ul>
+<li>让联邦学习可以支持较少数据量或数据分布不均的情景，以及让少样本学习支持多方协同</li>
+<li>客户端数据差异较大的情况下，都可以保持比较稳定的准确率</li>
+</ul>
+<p>缺点：</p>
+<ul>
+<li>准确率随新类别数据量变化较大</li>
+<li>随客户端数量增多，准确率下降</li>
+</ul>
+<h2 id="论文使用的数据集和实验工具是否公开能否共享">论文使用的数据集和实验工具（是否公开，能否共享）</h2>
+<ul>
+<li>miniImageNet：是ImageNet数据集的一个子集（公开，共享）<a href="#fn7" class="footnote-ref" id="fnref7" role="doc-noteref"><sup>7</sup></a></li>
+<li>FC100 ：是CIFAR100数据集的子集（公开共享）<a href="#fn8" class="footnote-ref" id="fnref8" role="doc-noteref"><sup>8</sup></a></li>
+<li>Sent140 ：自然语言处理方面的</li>
+</ul>
+<h2 id="论文使用的实验方法">论文使用的实验方法</h2>
+<p>描述：采用不同数据集，和不同shot数量的条件下，让下面5种方法做对比；以及改变客户端数量进行测试</p>
+<ul>
+<li>数据集处理：选择一个数据集（上面两个都有各自实验），对数据集进行两种划分，一种为均等划分，一种为不均等（数量，以及类别都不全相同）划分，即每个客户端的数据差异性可能较大；</li>
+<li>模型选择：12-layer deep neural network (ResNet-12)<a href="#fn9" class="footnote-ref" id="fnref9" role="doc-noteref"><sup>9</sup></a></li>
+<li>对比的方法：FedFSL-local（没有分布式的FSL）,FedFSL-prox<a href="#fn10" class="footnote-ref" id="fnref10" role="doc-noteref"><sup>10</sup></a>,FedFSL-naive,FedFSL-MI,FedFSL-MI-Adv（后面三个为文章作者陆续提到的三种方法，最好一种为上面为最终改良版）</li>
+</ul>
+<p>测试效果：</p>
+<ul>
+<li><img src="论文.assets/image-20211107153735575.png" title="fig:" alt="image-20211107153735575" /></li>
+<li><img src="论文.assets/image-20211107153752092.png" title="fig:" alt="image-20211107153752092" /></li>
+</ul>
+<section class="footnotes" role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1" role="doc-endnote"><p>Tian Li, Anit Kumar Sahu, Ameet Talwalkar, and Virginia Smith. 2020. Federated learning: Challenges, methods, and future directions. IEEE Signal Processing Magazine (2020).<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2" role="doc-endnote"><p>H Brendan McMahan, Seth Hampson, et al. 2017. Communication-efficient learning of deep networks from decentralized data. In AISTATS<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3" role="doc-endnote"><p>Yue Zhao, Meng Li, Liangzhen Lai, Naveen Suda, Damon Civin, and Vikas Chandra. 2018. Federated learning with non-iid data. arXiv preprint arXiv:1806.00582 (2018)<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4" role="doc-endnote"><p>Chelsea Finn, Pieter Abbeel, and Sergey Levine. 2017. Model-agnostic metalearning for fast adaptation of deep networks. ICML (2017).<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5" role="doc-endnote"><p>Zhenguo Li, Fengwei Zhou, Fei Chen, and Hang Li. 2017. Meta-sgd: Learning to learn quickly for few-shot learning. arXiv preprint arXiv:1707.09835 (2017)<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6" role="doc-endnote"><p>Oriol Vinyals, Charles Blundell, Timothy Lillicrap, Daan Wierstra, et al. 2016. Matching networks for one shot learning. In NIPS.<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn7" role="doc-endnote"><p>https://github.com/yaoyao-liu/mini-imagenet-tools<a href="#fnref7" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn8" role="doc-endnote"><p>https://paperswithcode.com/dataset/fc100 [^]:文献1<a href="#fnref8" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn9" role="doc-endnote"><p>Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. 2016. Deep residual learning for image recognition. In CVPR<a href="#fnref9" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn10" role="doc-endnote"><p>Tian Li, Anit Kumar Sahu, Manzil Zaheer, Maziar Sanjabi, Ameet Talwalkar, and Virginia Smith. 2018. Federated optimization in heterogeneous networks. arXiv preprint arXiv:1812.06127 (2018).<a href="#fnref10" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>本文作者： </strong>YFchen
+  </li>
+  <li class="post-copyright-link">
+    <strong>本文链接：</strong>
+    <a href="https://yfchen2001.github.io/2021/11/07/%E8%AE%BA%E6%96%87%E9%98%85%E8%AF%BB%E7%AC%94%E8%AE%B0/%E8%AE%BA%E6%96%87/" title="">https://yfchen2001.github.io/2021/11/07/论文阅读笔记/论文/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>版权声明： </strong>本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> 许可协议。转载请注明出处！
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2021/11/01/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%92%8C%E6%A0%91%E7%8A%B6%E6%95%B0%E7%BB%84/%E7%BA%BF%E6%AE%B5%E6%A0%91%E5%9F%BA%E7%A1%80/" rel="prev" title="线段树专题--基础部分">
+      <i class="fa fa-chevron-left"></i> 线段树专题--基础部分
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+    <div class="comments" id="gitalk-container"></div>
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E5%87%BA%E5%A4%84%E5%8F%8A%E5%B9%B4%E4%BB%BD%E8%AE%BA%E6%96%87%E6%A0%87%E9%A2%98%E8%AE%BA%E6%96%87%E4%BD%9C%E8%80%85%E5%8F%8A%E5%B7%A5%E4%BD%9C%E5%8D%95%E4%BD%8D%E5%9B%A2%E9%98%9F"><span class="nav-number">1.</span> <span class="nav-text">论文出处及年份、论文标题、论文作者及工作单位（团队）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%94%AE%E8%AF%8D"><span class="nav-number">2.</span> <span class="nav-text">关键词</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A6%82%E8%BF%B0"><span class="nav-number">3.</span> <span class="nav-text">概述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E7%A0%94%E7%A9%B6%E7%9A%84%E9%97%AE%E9%A2%98%E5%8F%8A%E5%85%B6%E6%84%8F%E4%B9%89"><span class="nav-number">4.</span> <span class="nav-text">论文研究的问题及其意义</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%8E%B0%E6%9C%89%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B6%E4%BC%98%E7%BC%BA%E7%82%B9%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">5.</span> <span class="nav-text">现有方法及其优缺点（参考文献）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E6%8F%90%E5%87%BA%E7%9A%84%E6%80%9D%E8%B7%AF%E5%92%8C%E6%96%B9%E6%B3%95%E5%8F%8A%E5%85%B6%E4%BC%98%E7%BC%BA%E7%82%B9"><span class="nav-number">6.</span> <span class="nav-text">论文提出的思路和方法，及其优缺点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86%E5%92%8C%E5%AE%9E%E9%AA%8C%E5%B7%A5%E5%85%B7%E6%98%AF%E5%90%A6%E5%85%AC%E5%BC%80%E8%83%BD%E5%90%A6%E5%85%B1%E4%BA%AB"><span class="nav-number">7.</span> <span class="nav-text">论文使用的数据集和实验工具（是否公开，能否共享）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BA%E6%96%87%E4%BD%BF%E7%94%A8%E7%9A%84%E5%AE%9E%E9%AA%8C%E6%96%B9%E6%B3%95"><span class="nav-number">8.</span> <span class="nav-text">论文使用的实验方法</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="YFchen"
+      src="https://i.loli.net/2021/10/31/cdX8rDpBSHNbEhY.jpg">
+  <p class="site-author-name" itemprop="name">YFchen</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">6</span>
+          <span class="site-state-item-name">日志</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">7</span>
+        <span class="site-state-item-name">分类</span></a>
+      </div>
+      <div class="site-state-item site-state-tags">
+            <a href="/tags/">
+          
+        <span class="site-state-item-count">5</span>
+        <span class="site-state-item-name">标签</span></a>
+      </div>
+  </nav>
+</div>
+  <div class="links-of-author motion-element">
+      <span class="links-of-author-item">
+        <a href="https://github.com/YFchen2001" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;YFchen2001" rel="noopener" target="_blank"><i class="fab fa-github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="/2965241316@qq.com" title="E-Mail → 2965241316@qq.com"><i class="fa fa-envelope fa-fw"></i>E-Mail</a>
+      </span>
+  </div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">YFchen</span>
+</div>
+  <div class="powered-by">由 <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://mist.theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Mist</a> 强力驱动
+  </div>
+
+
+<div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<span id="busuanzi_container_site_pv" style='display:none'>
+    本站总访问量 <span id="busuanzi_value_site_pv"></span> 次
+    <span class="post-meta-divider">|</span>
+</span>
+<span id="busuanzi_container_site_uv" style='display:none'>
+    有<span id="busuanzi_value_site_uv"></span>人看过我的博客啦
+</span>
+</div>
+        
+<div class="busuanzi-count">
+  <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+    <span class="post-meta-item" id="busuanzi_container_site_uv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="user"></i>
+      </span>
+      <span class="site-uv" title="总访客量">
+        <span id="busuanzi_value_site_uv"></span>
+      </span>
+    </span>
+    <span class="post-meta-divider">|</span>
+    <span class="post-meta-item" id="busuanzi_container_site_pv" style="display: none;">
+      <span class="post-meta-item-icon">
+        <i class="true"></i>
+      </span>
+      <span class="site-pv" title="总访问量">
+        <span id="busuanzi_value_site_pv"></span>
+      </span>
+    </span>
+</div>
+
+
+
+
+
+
+<script>
+  (function() {
+    function leancloudSelector(url) {
+      url = encodeURI(url);
+      return document.getElementById(url).querySelector('.leancloud-visitors-count');
+    }
+
+    function addCount(Counter) {
+      var visitors = document.querySelector('.leancloud_visitors');
+      var url = decodeURI(visitors.id);
+      var title = visitors.dataset.flagTitle;
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          if (results.length > 0) {
+            var counter = results[0];
+            leancloudSelector(url).innerText = counter.time + 1;
+            Counter('put', '/classes/Counter/' + counter.objectId, { time: { '__op': 'Increment', 'amount': 1 } })
+              .catch(error => {
+                console.error('Failed to save visitor count', error);
+              });
+          } else {
+              Counter('post', '/classes/Counter', { title, url, time: 1 })
+                .then(response => response.json())
+                .then(() => {
+                  leancloudSelector(url).innerText = 1;
+                })
+                .catch(error => {
+                  console.error('Failed to create', error);
+                });
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    function showTime(Counter) {
+      var visitors = document.querySelectorAll('.leancloud_visitors');
+      var entries = [...visitors].map(element => {
+        return decodeURI(element.id);
+      });
+
+      Counter('get', '/classes/Counter?where=' + encodeURIComponent(JSON.stringify({ url: { '$in': entries } })))
+        .then(response => response.json())
+        .then(({ results }) => {
+          for (let url of entries) {
+            let target = results.find(item => item.url === url);
+            leancloudSelector(url).innerText = target ? target.time : 0;
+          }
+        })
+        .catch(error => {
+          console.error('LeanCloud Counter Error', error);
+        });
+    }
+
+    let { app_id, app_key, server_url } = {"enable":true,"app_id":"jyeyFCBfgkvSiXbuefRa0BoX-MdYXbMMI","app_key":"atiJ6ekDbTbysVJ8SDTMOTSP","server_url":null,"security":false};
+    function fetchData(api_server) {
+      var Counter = (method, url, data) => {
+        return fetch(`${api_server}/1.1${url}`, {
+          method,
+          headers: {
+            'X-LC-Id'     : app_id,
+            'X-LC-Key'    : app_key,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(data)
+        });
+      };
+      if (CONFIG.page.isPost) {
+        if (CONFIG.hostname !== location.hostname) return;
+        addCount(Counter);
+      } else if (document.querySelectorAll('.post-title-link').length >= 1) {
+        showTime(Counter);
+      }
+    }
+
+    let api_server = app_id.slice(-9) !== '-MdYXbMMI' ? server_url : `https://${app_id.slice(0, 8).toLowerCase()}.api.lncldglobal.com`;
+
+    if (api_server) {
+      fetchData(api_server);
+    } else {
+      fetch('https://app-router.leancloud.cn/2/route?appId=' + app_id)
+        .then(response => response.json())
+        .then(({ api_server }) => {
+          fetchData('https://' + api_server);
+        });
+    }
+  })();
+</script>
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  
+  <script color='179,179,179' opacity='0.5' zIndex='-1' count='150' src="/lib/canvas-nest/canvas-nest.min.js"></script>
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/muse.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+  
+<script src="/js/local-search.js"></script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+  
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.css">
+
+<script>
+NexT.utils.loadComments(document.querySelector('#gitalk-container'), () => {
+  NexT.utils.getScript('//cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js', () => {
+    var gitalk = new Gitalk({
+      clientID    : 'f1dc440bb3d1c2b1cc7d',
+      clientSecret: '4630ddcbc21ae98a24bdffbe19bb8e9291d12ad0',
+      repo        : 'YFchen2001.github.io',
+      owner       : 'YFchen2001',
+      admin       : ['YFchen2001'],
+      id          : '632cbb1f964e4438af4f306a0619121e',
+        language: 'zh-CN',
+      distractionFreeMode: true
+    });
+    gitalk.render('gitalk-container');
+  }, window.Gitalk);
+});
+</script>
+
+</body>
+</html>
